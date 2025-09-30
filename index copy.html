@@ -1,0 +1,1204 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8" />
+  <title>IFE 2025 Skills Dashboard</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <link rel="icon" type="image/png" sizes="192x192" 
+        href="https://static.wixstatic.com/media/5589a1_0954caf295c84f55ae97628ff17fa2d9%7Emv2.png/v1/fill/w_192%2Ch_192%2Clg_1%2Cusm_0.66_1.00_0.01/5589a1_0954caf295c84f55ae97628ff17fa2d9%7Emv2.png">
+  <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+  <style>
+    body { font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif; margin: 0; background-color: #f8f9fa; }
+    .container { max-width: 1200px; margin: 0 auto; padding: 20px; }
+    h1, h2, h3, h4 { margin: 0.4rem 0; color: #333; }
+    .note { color: #555; font-size: 0.9rem; margin-bottom: 1rem; }
+    .charts-grid { display: grid; grid-template-columns: 1fr; gap: 20px; max-width: 980px; margin: 0 auto; } 
+    .card { border: 1px solid #ddd; border-radius: 14px; padding: 20px; box-shadow: 0 4px 12px rgba(0,0,0,0.08); background-color: #fff; }
+    
+    /* Main Tab Styles */
+    .tabs { display: flex; border-bottom: 1px solid #ddd; margin-bottom: 20px; flex-wrap: wrap; }
+    .tab-button { padding: 10px 18px; cursor: pointer; border: none; background: none; font-size: 1rem; color: #555; border-bottom: 3px solid transparent; }
+    .tab-button.active { color: #cdacd4; border-bottom-color: #cdacd4; font-weight: 600; }
+    .tab-content { display: none; }
+    .tab-content.active { display: block; }
+
+    /* Sub-Tab Styles */
+    .subtabs { display: flex; flex-wrap: wrap; background-color: #e9ecef; border-radius: 8px; padding: 5px; margin-bottom: 20px; }
+    .subtab-button { flex-grow: 1; text-align: center; padding: 8px 12px; cursor: pointer; border: none; background: none; font-size: 0.9rem; color: #495057; border-radius: 6px; }
+    .subtab-button.active { background-color: #fff; color: #cdacd4; font-weight: 600; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
+    .subtab-content { display: none; }
+    .subtab-content.active { display: block; }
+
+    .student-view-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 20px;
+    }
+
+    /* Assessment Tab Styles */
+    .assessment-tabs { display: flex; justify-content: center; margin-bottom: 20px; }
+    .assessment-button { padding: 8px 16px; cursor: pointer; border: 1px solid #ddd; background-color: #f8f9fa; font-size: 0.9rem; color: #495057; }
+    .assessment-button:first-child { border-top-left-radius: 6px; border-bottom-left-radius: 6px; }
+    .assessment-button:last-child { border-top-right-radius: 6px; border-bottom-right-radius: 6px; border-left: none; }
+    .assessment-button.active { background-color: #cdacd4; color: #fff; border-color: #cdacd4; }
+    .assessment-content { display: none; }
+    .assessment-content.active { display: block; }
+
+    .card > div[id^="chart-"] { width: 100%; height: 450px; }
+    .placeholder { color:#666; font-size:0.95rem; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Team & Student Skill Dashboard: Institute for Entrepreneurship 2025</h1>
+    <p class="note">Welcome to the skills dashboard for the Institute for Entrepreneurship 2025 program. This interactive report tracks the professional growth of students, showing how their skills have developed from the beginning to the end of the fellowship. You can navigate through the tabs to view charts for entire teams or dive into the progress of individual students. Each chart provides a visual snapshot of their abilities, making it easy to see their journey and development over the 5 week period</p>
+    <div class="note"><b>Cambio Labs × Prep for Prep</b></div>
+
+    <div class="tabs">
+      <button class="tab-button" onclick="openTab(event, 'team1')">Thryfted</button>
+      <button class="tab-button" onclick="openTab(event, 'team2')">Money Migo</button>
+      <button class="tab-button" onclick="openTab(event, 'team3')">Mobilize Us</button>
+      <button class="tab-button" onclick="openTab(event, 'team4')">Willing-Soil</button>
+      <button class="tab-button" onclick="openTab(event, 'team5')">Endeavor</button>
+      <button class="tab-button" onclick="openTab(event, 'team6')">Semblynce</button>
+    </div>
+
+    <div id="welcome-page" class="tab-content active">
+      <div class="card" style="max-width: 980px; margin: 20px auto; padding: 25px;">
+        <h2 style="text-align: center; margin-bottom: 20px;">How to Read This Dashboard</h2>
+        
+        <h4>Understanding the Charts</h4>
+        <p>Each chart is a radar graph that provides a visual snapshot of six key skill areas. The six measured areas are:</p>
+        <ul style="margin: 0 auto 1rem; max-width: 400px;">
+          <li>Adaptability & Creativity</li>
+          <li>Problem-Solving</li>
+          <li>EQ & Ethics</li>
+          <li>Collaboration & Communication</li>
+          <li>Tech Aptitude</li>
+          <li>Time Management</li>
+        </ul>
+        <p>The scores are rated on a scale of 1 to 5. These scores should be seen as a reflection of the skills a student demonstrated during the program, rather than a definitive judgment of what they are "good" or "bad" at.</p>
+
+        <h4>How Scores Are Calculated</h4>
+        <p>There are two types of assessments you can view for each student:</p>
+        <ul>
+          <li><strong>Student Self-Assessment:</strong> This view is based on the student's own evaluation of their skills, as recorded in self-assessment surveys completed throughout the program.</li>
+          <li><strong>Overall Assessment:</strong> This is a more holistic score calculated from a combination of peer feedback, demonstrated abilities in written assignments, and performance during the final pitch presentations.</li>
+        </ul>
+        <p style="text-align: center; margin-top: 20px;">Please select a team from the tabs above to begin.</p>
+      </div>
+    </div>
+
+    <!-- TEAM 1: THRYFTED (WITH REAL DATA) -->
+    <div id="team1" class="tab-content">
+      <h2>Team: Thryfted</h2>
+      <div class="subtabs">
+        <button class="subtab-button active" onclick="openSubTab(event, 'team1-overview')">Team Overview</button>
+        <button class="subtab-button" onclick="openSubTab(event, 'team1-yasmin')">Yasmin Folarin</button>
+        <button class="subtab-button" onclick="openSubTab(event, 'team1-keziah')">Keziah Letsa</button>
+        <button class="subtab-button" onclick="openSubTab(event, 'team1-jaheem')">Jaheem Beck</button>
+        <button class="subtab-button" onclick="openSubTab(event, 'team1-tochi')">Tochi Ugboajah</button>
+      </div>
+
+      <div id="team1-overview" class="subtab-content active">
+        <h3>Team Aggregate View</h3>
+        <div class="charts-grid">
+          <div class="card"><h3>Pre-Program Baseline</h3><div id="chart-team1-begin"></div></div>
+          <div class="card"><h3>Mid-Program Snapshot (Week 3)</h3><div id="chart-team1-middle"></div></div>
+          <div class="card"><h3>Post-Program & Final Pitches</h3><div id="chart-team1-end"></div></div>
+        </div>
+      </div>
+
+      <div id="team1-yasmin" class="subtab-content">
+        <h3>Student: Yasmin Folarin</h3>
+        <div class="assessment-tabs">
+          <button class="assessment-button active" onclick="openAssessmentView(event, 'team1-yasminfolarin-overall')">Overall Assessment</button>
+          <button class="assessment-button" onclick="openAssessmentView(event, 'team1-yasminfolarin-self')">Student Self-Assessment</button>
+        </div>
+        <div id="team1-yasminfolarin-overall" class="assessment-content active">
+          <div class="charts-grid">
+            <div class="card"><h3>Pre-Program Baseline</h3><div id="chart-team1-yasminfolarin-pre"></div></div>
+            <div class="card"><h3>Mid-Program Snapshot (Week 3)</h3><div id="chart-team1-yasminfolarin-mid"></div></div>
+            <div class="card"><h3>Post-Program & Final Pitches</h3><div id="chart-team1-yasminfolarin-post"></div></div>
+          </div>
+        </div>
+        <div id="team1-yasminfolarin-self" class="assessment-content">
+          <div class="charts-grid">
+            <div class="card"><h3>Pre-Program Baseline</h3><div id="chart-team1-yasminfolarin-pre-self"></div></div>
+            <div class="card"><h3>Mid-Program Snapshot (Week 3)</h3><div id="chart-team1-yasminfolarin-mid-self"></div></div>
+            <div class="card"><h3>Post-Program & Final Pitches</h3><div id="chart-team1-yasminfolarin-post-self"></div></div>
+          </div>
+        </div>
+      </div>
+
+      <div id="team1-keziah" class="subtab-content">
+        <h3>Student: Keziah Letsa</h3>
+        <div class="assessment-tabs">
+          <button class="assessment-button active" onclick="openAssessmentView(event, 'team1-keziahletsa-overall')">Overall Assessment</button>
+          <button class="assessment-button" onclick="openAssessmentView(event, 'team1-keziahletsa-self')">Student Self-Assessment</button>
+        </div>
+        <div id="team1-keziahletsa-overall" class="assessment-content active">
+          <div class="charts-grid">
+            <div class="card"><h3>Pre-Program Baseline</h3><div id="chart-team1-keziahletsa-pre"></div></div>
+            <div class="card"><h3>Mid-Program Snapshot (Week 3)</h3><div id="chart-team1-keziahletsa-mid"></div></div>
+            <div class="card"><h3>Post-Program & Final Pitches</h3><div id="chart-team1-keziahletsa-post"></div></div>
+          </div>
+        </div>
+        <div id="team1-keziahletsa-self" class="assessment-content">
+          <div class="charts-grid">
+            <div class="card"><h3>Pre-Program Baseline</h3><div id="chart-team1-keziahletsa-pre-self"></div></div>
+            <div class="card"><h3>Mid-Program Snapshot (Week 3)</h3><div id="chart-team1-keziahletsa-mid-self"></div></div>
+            <div class="card"><h3>Post-Program & Final Pitches</h3><div id="chart-team1-keziahletsa-post-self"></div></div>
+          </div>
+        </div>
+      </div>
+
+      <div id="team1-jaheem" class="subtab-content">
+        <h3>Student: Jaheem Beck</h3>
+        <div class="assessment-tabs">
+          <button class="assessment-button active" onclick="openAssessmentView(event, 'team1-jaheembeck-overall')">Overall Assessment</button>
+          <button class="assessment-button" onclick="openAssessmentView(event, 'team1-jaheembeck-self')">Student Self-Assessment</button>
+        </div>
+        <div id="team1-jaheembeck-overall" class="assessment-content active">
+          <div class="charts-grid">
+            <div class="card"><h3>Pre-Program Baseline</h3><div id="chart-team1-jaheembeck-pre"></div></div>
+            <div class="card"><h3>Mid-Program Snapshot (Week 3)</h3><div id="chart-team1-jaheembeck-mid"></div></div>
+            <div class="card"><h3>Post-Program & Final Pitches</h3><div id="chart-team1-jaheembeck-post"></div></div>
+          </div>
+        </div>
+        <div id="team1-jaheembeck-self" class="assessment-content">
+          <div class="charts-grid">
+            <div class="card"><h3>Pre-Program Baseline</h3><div id="chart-team1-jaheembeck-pre-self"></div></div>
+            <div class="card"><h3>Mid-Program Snapshot (Week 3)</h3><div id="chart-team1-jaheembeck-mid-self"></div></div>
+            <div class="card"><h3>Post-Program & Final Pitches</h3><div id="chart-team1-jaheembeck-post-self"></div></div>
+          </div>
+        </div>
+      </div>
+
+      <div id="team1-tochi" class="subtab-content">
+        <h3>Student: Tochi Ugboajah</h3>
+        <div class="assessment-tabs">
+          <button class="assessment-button active" onclick="openAssessmentView(event, 'team1-tochiugboajah-overall')">Overall Assessment</button>
+          <button class="assessment-button" onclick="openAssessmentView(event, 'team1-tochiugboajah-self')">Student Self-Assessment</button>
+        </div>
+        <div id="team1-tochiugboajah-overall" class="assessment-content active">
+          <div class="charts-grid">
+            <div class="card"><h3>Pre-Program Baseline</h3><div id="chart-team1-tochiugboajah-pre"></div></div>
+            <div class="card"><h3>Mid-Program Snapshot (Week 3)</h3><div id="chart-team1-tochiugboajah-mid"></div></div>
+            <div class="card"><h3>Post-Program & Final Pitches</h3><div id="chart-team1-tochiugboajah-post"></div></div>
+          </div>
+        </div>
+        <div id="team1-tochiugboajah-self" class="assessment-content">
+          <div class="charts-grid">
+            <div class="card"><h3>Pre-Program Baseline</h3><div id="chart-team1-tochiugboajah-pre-self"></div></div>
+            <div class="card"><h3>Mid-Program Snapshot (Week 3)</h3><div id="chart-team1-tochiugboajah-mid-self"></div></div>
+            <div class="card"><h3>Post-Program & Final Pitches</h3><div id="chart-team1-tochiugboajah-post-self"></div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- TEAM 2: MONEY MIGO -->
+    <div id="team2" class="tab-content">
+      <h2>Team: Money Migo</h2>
+      <div class="subtabs">
+        <button class="subtab-button active" onclick="openSubTab(event, 'team2-overview')">Team Overview</button>
+        <button class="subtab-button" onclick="openSubTab(event, 'team2-ben-brown')">Ben Brown</button>
+        <button class="subtab-button" onclick="openSubTab(event, 'team2-isabella-calderon')">Isabella Calderon</button>
+        <button class="subtab-button" onclick="openSubTab(event, 'team2-maryama-karimou')">Maryama Karimou</button>
+        <button class="subtab-button" onclick="openSubTab(event, 'team2-nusayba-nizam')">Nusayba Nizam</button>
+      </div>
+
+      <div id="team2-overview" class="subtab-content active">
+        <h3>Team Aggregate View</h3>
+        <div class="charts-grid">
+          <div class="card"><h3>Pre-Program Baseline</h3><div id="chart-team2-begin"></div></div>
+          <div class="card"><h3>Mid-Program Snapshot (Week 3)</h3><div id="chart-team2-middle"></div></div>
+          <div class="card"><h3>Post-Program & Final Pitches</h3><div id="chart-team2-end"></div></div>
+        </div>
+      </div>
+
+      <div id="team2-ben-brown" class="subtab-content">
+        <h3>Student: Ben Brown</h3>
+        <div class="assessment-tabs">
+          <button class="assessment-button active" onclick="openAssessmentView(event, 'team2-benbrown-overall')">Overall Assessment</button>
+          <button class="assessment-button" onclick="openAssessmentView(event, 'team2-benbrown-self')">Student Self-Assessment</button>
+        </div>
+        <div id="team2-benbrown-overall" class="assessment-content active">
+          <div class="charts-grid">
+            <div class="card"><h3>Pre-Program Baseline</h3><div id="chart-team2-benbrown-pre"></div></div>
+            <div class="card"><h3>Mid-Program Snapshot (Week 3)</h3><div id="chart-team2-benbrown-mid"></div></div>
+            <div class="card"><h3>Post-Program & Final Pitches</h3><div id="chart-team2-benbrown-post"></div></div>
+          </div>
+        </div>
+        <div id="team2-benbrown-self" class="assessment-content">
+          <div class="charts-grid">
+            <div class="card"><h3>Pre-Program Baseline</h3><div id="chart-team2-benbrown-pre-self"></div></div>
+            <div class="card"><h3>Mid-Program Snapshot (Week 3)</h3><div id="chart-team2-benbrown-mid-self"></div></div>
+            <div class="card"><h3>Post-Program & Final Pitches</h3><div id="chart-team2-benbrown-post-self"></div></div>
+          </div>
+        </div>
+      </div>
+
+      <div id="team2-isabella-calderon" class="subtab-content">
+        <h3>Student: Isabella Calderon</h3>
+        <div class="assessment-tabs">
+          <button class="assessment-button active" onclick="openAssessmentView(event, 'team2-isabellacalderon-overall')">Overall Assessment</button>
+          <button class="assessment-button" onclick="openAssessmentView(event, 'team2-isabellacalderon-self')">Student Self-Assessment</button>
+        </div>
+        <div id="team2-isabellacalderon-overall" class="assessment-content active">
+          <div class="charts-grid">
+            <div class="card"><h3>Pre-Program Baseline</h3><div id="chart-team2-isabellacalderon-pre"></div></div>
+            <div class="card"><h3>Mid-Program Snapshot (Week 3)</h3><div id="chart-team2-isabellacalderon-mid"></div></div>
+            <div class="card"><h3>Post-Program & Final Pitches</h3><div id="chart-team2-isabellacalderon-post"></div></div>
+          </div>
+        </div>
+        <div id="team2-isabellacalderon-self" class="assessment-content">
+          <div class="charts-grid">
+            <div class="card"><h3>Pre-Program Baseline</h3><div id="chart-team2-isabellacalderon-pre-self"></div></div>
+            <div class="card"><h3>Mid-Program Snapshot (Week 3)</h3><div id="chart-team2-isabellacalderon-mid-self"></div></div>
+            <div class="card"><h3>Post-Program & Final Pitches</h3><div id="chart-team2-isabellacalderon-post-self"></div></div>
+          </div>
+        </div>
+      </div>
+
+      <div id="team2-maryama-karimou" class="subtab-content">
+        <h3>Student: Maryama Karimou</h3>
+        <div class="assessment-tabs">
+          <button class="assessment-button active" onclick="openAssessmentView(event, 'team2-maryamakarimou-overall')">Overall Assessment</button>
+          <button class="assessment-button" onclick="openAssessmentView(event, 'team2-maryamakarimou-self')">Student Self-Assessment</button>
+        </div>
+        <div id="team2-maryamakarimou-overall" class="assessment-content active">
+          <div class="charts-grid">
+            <div class="card"><h3>Pre-Program Baseline</h3><div id="chart-team2-maryamakarimou-pre"></div></div>
+            <div class="card"><h3>Mid-Program Snapshot (Week 3)</h3><div id="chart-team2-maryamakarimou-mid"></div></div>
+            <div class="card"><h3>Post-Program & Final Pitches</h3><div id="chart-team2-maryamakarimou-post"></div></div>
+          </div>
+        </div>
+        <div id="team2-maryamakarimou-self" class="assessment-content">
+          <div class="charts-grid">
+            <div class="card"><h3>Pre-Program Baseline</h3><div id="chart-team2-maryamakarimou-pre-self"></div></div>
+            <div class="card"><h3>Mid-Program Snapshot (Week 3)</h3><div id="chart-team2-maryamakarimou-mid-self"></div></div>
+            <div class="card"><h3>Post-Program & Final Pitches</h3><div id="chart-team2-maryamakarimou-post-self"></div></div>
+          </div>
+        </div>
+      </div>
+
+      <div id="team2-nusayba-nizam" class="subtab-content">
+        <h3>Student: Nusayba Nizam</h3>
+        <div class="assessment-tabs">
+          <button class="assessment-button active" onclick="openAssessmentView(event, 'team2-nusaybanizam-overall')">Overall Assessment</button>
+          <button class="assessment-button" onclick="openAssessmentView(event, 'team2-nusaybanizam-self')">Student Self-Assessment</button>
+        </div>
+        <div id="team2-nusaybanizam-overall" class="assessment-content active">
+          <div class="charts-grid">
+            <div class="card"><h3>Pre-Program Baseline</h3><div id="chart-team2-nusaybanizam-pre"></div></div>
+            <div class="card"><h3>Mid-Program Snapshot (Week 3)</h3><div id="chart-team2-nusaybanizam-mid"></div></div>
+            <div class="card"><h3>Post-Program & Final Pitches</h3><div id="chart-team2-nusaybanizam-post"></div></div>
+          </div>
+        </div>
+        <div id="team2-nusaybanizam-self" class="assessment-content">
+          <div class="charts-grid">
+            <div class="card"><h3>Pre-Program Baseline</h3><div id="chart-team2-nusaybanizam-pre-self"></div></div>
+            <div class="card"><h3>Mid-Program Snapshot (Week 3)</h3><div id="chart-team2-nusaybanizam-mid-self"></div></div>
+            <div class="card"><h3>Post-Program & Final Pitches</h3><div id="chart-team2-nusaybanizam-post-self"></div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- TEAM 3: MOBILIZE US -->
+    <div id="team3" class="tab-content">
+      <h2>Team: Mobilize Us</h2>
+      <div class="subtabs">
+        <button class="subtab-button active" onclick="openSubTab(event, 'team3-overview')">Team Overview</button>
+        <button class="subtab-button" onclick="openSubTab(event, 'team3-ben-dike')">Ben Dike</button>
+        <button class="subtab-button" onclick="openSubTab(event, 'team3-jose-plata')">Jose Plata</button>
+        <button class="subtab-button" onclick="openSubTab(event, 'team3-logan-passe')">Logan Passe</button>
+        <button class="subtab-button" onclick="openSubTab(event, 'team3-zaire-spencer')">Zaire Spencer</button>
+      </div>
+
+      <div id="team3-overview" class="subtab-content active">
+        <h3>Team Aggregate View</h3>
+        <div class="charts-grid">
+          <div class="card"><h3>Pre-Program Baseline</h3><div id="chart-team3-begin"></div></div>
+          <div class="card"><h3>Mid-Program Snapshot (Week 3)</h3><div id="chart-team3-middle"></div></div>
+          <div class="card"><h3>Post-Program & Final Pitches</h3><div id="chart-team3-end"></div></div>
+        </div>
+      </div>
+
+      <div id="team3-ben-dike" class="subtab-content">
+        <h3>Student: Ben Dike</h3>
+        <div class="assessment-tabs">
+          <button class="assessment-button active" onclick="openAssessmentView(event, 'team3-bendike-overall')">Overall Assessment</button>
+          <button class="assessment-button" onclick="openAssessmentView(event, 'team3-bendike-self')">Student Self-Assessment</button>
+        </div>
+        <div id="team3-bendike-overall" class="assessment-content active">
+          <div class="charts-grid">
+            <div class="card"><h3>Pre-Program Baseline</h3><div id="chart-team3-bendike-pre"></div></div>
+            <div class="card"><h3>Mid-Program Snapshot (Week 3)</h3><div id="chart-team3-bendike-mid"></div></div>
+            <div class="card"><h3>Post-Program & Final Pitches</h3><div id="chart-team3-bendike-post"></div></div>
+          </div>
+        </div>
+        <div id="team3-bendike-self" class="assessment-content">
+          <div class="charts-grid">
+            <div class="card"><h3>Pre-Program Baseline</h3><div id="chart-team3-bendike-pre-self"></div></div>
+            <div class="card"><h3>Mid-Program Snapshot (Week 3)</h3><div id="chart-team3-bendike-mid-self"></div></div>
+            <div class="card"><h3>Post-Program & Final Pitches</h3><div id="chart-team3-bendike-post-self"></div></div>
+          </div>
+        </div>
+      </div>
+
+      <div id="team3-jose-plata" class="subtab-content">
+        <h3>Student: Jose Plata</h3>
+        <div class="assessment-tabs">
+          <button class="assessment-button active" onclick="openAssessmentView(event, 'team3-joseplata-overall')">Overall Assessment</button>
+          <button class="assessment-button" onclick="openAssessmentView(event, 'team3-joseplata-self')">Student Self-Assessment</button>
+        </div>
+        <div id="team3-joseplata-overall" class="assessment-content active">
+          <div class="charts-grid">
+            <div class="card"><h3>Pre-Program Baseline</h3><div id="chart-team3-joseplata-pre"></div></div>
+            <div class="card"><h3>Mid-Program Snapshot (Week 3)</h3><div id="chart-team3-joseplata-mid"></div></div>
+            <div class="card"><h3>Post-Program & Final Pitches</h3><div id="chart-team3-joseplata-post"></div></div>
+          </div>
+        </div>
+        <div id="team3-joseplata-self" class="assessment-content">
+          <div class="charts-grid">
+            <div class="card"><h3>Pre-Program Baseline</h3><div id="chart-team3-joseplata-pre-self"></div></div>
+            <div class="card"><h3>Mid-Program Snapshot (Week 3)</h3><div id="chart-team3-joseplata-mid-self"></div></div>
+            <div class="card"><h3>Post-Program & Final Pitches</h3><div id="chart-team3-joseplata-post-self"></div></div>
+          </div>
+        </div>
+      </div>
+
+      <div id="team3-logan-passe" class="subtab-content">
+        <h3>Student: Logan Passe</h3>
+        <div class="assessment-tabs">
+          <button class="assessment-button active" onclick="openAssessmentView(event, 'team3-loganpasse-overall')">Overall Assessment</button>
+          <button class="assessment-button" onclick="openAssessmentView(event, 'team3-loganpasse-self')">Student Self-Assessment</button>
+        </div>
+        <div id="team3-loganpasse-overall" class="assessment-content active">
+          <div class="charts-grid">
+            <div class="card"><h3>Pre-Program Baseline</h3><div id="chart-team3-loganpasse-pre"></div></div>
+            <div class="card"><h3>Mid-Program Snapshot (Week 3)</h3><div id="chart-team3-loganpasse-mid"></div></div>
+            <div class="card"><h3>Post-Program & Final Pitches</h3><div id="chart-team3-loganpasse-post"></div></div>
+          </div>
+        </div>
+        <div id="team3-loganpasse-self" class="assessment-content">
+          <div class="charts-grid">
+            <div class="card"><h3>Pre-Program Baseline</h3><div id="chart-team3-loganpasse-pre-self"></div></div>
+            <div class="card"><h3>Mid-Program Snapshot (Week 3)</h3><div id="chart-team3-loganpasse-mid-self"></div></div>
+            <div class="card"><h3>Post-Program & Final Pitches</h3><div id="chart-team3-loganpasse-post-self"></div></div>
+          </div>
+        </div>
+      </div>
+
+      <div id="team3-zaire-spencer" class="subtab-content">
+        <h3>Student: Zaire Spencer</h3>
+        <div class="assessment-tabs">
+          <button class="assessment-button active" onclick="openAssessmentView(event, 'team3-zairespencer-overall')">Overall Assessment</button>
+          <button class="assessment-button" onclick="openAssessmentView(event, 'team3-zairespencer-self')">Student Self-Assessment</button>
+        </div>
+        <div id="team3-zairespencer-overall" class="assessment-content active">
+          <div class="charts-grid">
+            <div class="card"><h3>Pre-Program Baseline</h3><div id="chart-team3-zairespencer-pre"></div></div>
+            <div class="card"><h3>Mid-Program Snapshot (Week 3)</h3><div id="chart-team3-zairespencer-mid"></div></div>
+            <div class="card"><h3>Post-Program & Final Pitches</h3><div id="chart-team3-zairespencer-post"></div></div>
+          </div>
+        </div>
+        <div id="team3-zairespencer-self" class="assessment-content">
+          <div class="charts-grid">
+            <div class="card"><h3>Pre-Program Baseline</h3><div id="chart-team3-zairespencer-pre-self"></div></div>
+            <div class="card"><h3>Mid-Program Snapshot (Week 3)</h3><div id="chart-team3-zairespencer-mid-self"></div></div>
+            <div class="card"><h3>Post-Program & Final Pitches</h3><div id="chart-team3-zairespencer-post-self"></div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- TEAM 4: WILLING SOIL -->
+    <div id="team4" class="tab-content">
+      <h2>Team: Willing Soil</h2>
+      <div class="subtabs">
+        <button class="subtab-button active" onclick="openSubTab(event, 'team4-overview')">Team Overview</button>
+        <button class="subtab-button" onclick="openSubTab(event, 'team4-ishmael-sillah')">Ishmael Sillah</button>
+        <button class="subtab-button" onclick="openSubTab(event, 'team4-jordan-edwards-williams')">Jordan Edwards Williams</button>
+        <button class="subtab-button" onclick="openSubTab(event, 'team4-michael-bawuah')">Michael Bawuah</button>
+        <button class="subtab-button" onclick="openSubTab(event, 'team4-raihan-rafin')">Raihan Rafin</button>
+      </div>
+
+      <div id="team4-overview" class="subtab-content active">
+        <h3>Team Aggregate View</h3>
+        <div class="charts-grid">
+          <div class="card"><h3>Pre-Program Baseline</h3><div id="chart-team4-begin"></div></div>
+          <div class="card"><h3>Mid-Program Snapshot (Week 3)</h3><div id="chart-team4-middle"></div></div>
+          <div class="card"><h3>Post-Program & Final Pitches</h3><div id="chart-team4-end"></div></div>
+        </div>
+      </div>
+
+      <div id="team4-ishmael-sillah" class="subtab-content">
+        <h3>Student: Ishmael Sillah</h3>
+        <div class="assessment-tabs">
+          <button class="assessment-button active" onclick="openAssessmentView(event, 'team4-ishmaelsillah-overall')">Overall Assessment</button>
+          <button class="assessment-button" onclick="openAssessmentView(event, 'team4-ishmaelsillah-self')">Student Self-Assessment</button>
+        </div>
+        <div id="team4-ishmaelsillah-overall" class="assessment-content active">
+          <div class="charts-grid">
+            <div class="card"><h3>Pre-Program Baseline</h3><div id="chart-team4-ishmaelsillah-pre"></div></div>
+            <div class="card"><h3>Mid-Program Snapshot (Week 3)</h3><div id="chart-team4-ishmaelsillah-mid"></div></div>
+            <div class="card"><h3>Post-Program & Final Pitches</h3><div id="chart-team4-ishmaelsillah-post"></div></div>
+          </div>
+        </div>
+        <div id="team4-ishmaelsillah-self" class="assessment-content">
+          <div class="charts-grid">
+            <div class="card"><h3>Pre-Program Baseline</h3><div id="chart-team4-ishmaelsillah-pre-self"></div></div>
+            <div class="card"><h3>Mid-Program Snapshot (Week 3)</h3><div id="chart-team4-ishmaelsillah-mid-self"></div></div>
+            <div class="card"><h3>Post-Program & Final Pitches</h3><div id="chart-team4-ishmaelsillah-post-self"></div></div>
+          </div>
+        </div>
+      </div>
+
+      <div id="team4-jordan-edwards-williams" class="subtab-content">
+        <h3>Student: Jordan Edwards Williams</h3>
+        <div class="assessment-tabs">
+          <button class="assessment-button active" onclick="openAssessmentView(event, 'team4-jordanedwardswilliams-overall')">Overall Assessment</button>
+          <button class="assessment-button" onclick="openAssessmentView(event, 'team4-jordanedwardswilliams-self')">Student Self-Assessment</button>
+        </div>
+        <div id="team4-jordanedwardswilliams-overall" class="assessment-content active">
+          <div class="charts-grid">
+            <div class="card"><h3>Pre-Program Baseline</h3><div id="chart-team4-jordanedwardswilliams-pre"></div></div>
+            <div class="card"><h3>Mid-Program Snapshot (Week 3)</h3><div id="chart-team4-jordanedwardswilliams-mid"></div></div>
+            <div class="card"><h3>Post-Program & Final Pitches</h3><div id="chart-team4-jordanedwardswilliams-post"></div></div>
+          </div>
+        </div>
+        <div id="team4-jordanedwardswilliams-self" class="assessment-content">
+          <div class="charts-grid">
+            <div class="card"><h3>Pre-Program Baseline</h3><div id="chart-team4-jordanedwardswilliams-pre-self"></div></div>
+            <div class="card"><h3>Mid-Program Snapshot (Week 3)</h3><div id="chart-team4-jordanedwardswilliams-mid-self"></div></div>
+            <div class="card"><h3>Post-Program & Final Pitches</h3><div id="chart-team4-jordanedwardswilliams-post-self"></div></div>
+          </div>
+        </div>
+      </div>
+
+      <div id="team4-michael-bawuah" class="subtab-content">
+        <h3>Student: Michael Bawuah</h3>
+        <div class="assessment-tabs">
+          <button class="assessment-button active" onclick="openAssessmentView(event, 'team4-michaelbawuah-overall')">Overall Assessment</button>
+          <button class="assessment-button" onclick="openAssessmentView(event, 'team4-michaelbawuah-self')">Student Self-Assessment</button>
+        </div>
+        <div id="team4-michaelbawuah-overall" class="assessment-content active">
+          <div class="charts-grid">
+            <div class="card"><h3>Pre-Program Baseline</h3><div id="chart-team4-michaelbawuah-pre"></div></div>
+            <div class="card"><h3>Mid-Program Snapshot (Week 3)</h3><div id="chart-team4-michaelbawuah-mid"></div></div>
+            <div class="card"><h3>Post-Program & Final Pitches</h3><div id="chart-team4-michaelbawuah-post"></div></div>
+          </div>
+        </div>
+        <div id="team4-michaelbawuah-self" class="assessment-content">
+          <div class="charts-grid">
+            <div class="card"><h3>Pre-Program Baseline</h3><div id="chart-team4-michaelbawuah-pre-self"></div></div>
+            <div class="card"><h3>Mid-Program Snapshot (Week 3)</h3><div id="chart-team4-michaelbawuah-mid-self"></div></div>
+            <div class="card"><h3>Post-Program & Final Pitches</h3><div id="chart-team4-michaelbawuah-post-self"></div></div>
+          </div>
+        </div>
+      </div>
+
+      <div id="team4-raihan-rafin" class="subtab-content">
+        <h3>Student: Raihan Rafin</h3>
+        <div class="assessment-tabs">
+          <button class="assessment-button active" onclick="openAssessmentView(event, 'team4-raihanrafin-overall')">Overall Assessment</button>
+          <button class="assessment-button" onclick="openAssessmentView(event, 'team4-raihanrafin-self')">Student Self-Assessment</button>
+        </div>
+        <div id="team4-raihanrafin-overall" class="assessment-content active">
+          <div class="charts-grid">
+            <div class="card"><h3>Pre-Program Baseline</h3><div id="chart-team4-raihanrafin-pre"></div></div>
+            <div class="card"><h3>Mid-Program Snapshot (Week 3)</h3><div id="chart-team4-raihanrafin-mid"></div></div>
+            <div class="card"><h3>Post-Program & Final Pitches</h3><div id="chart-team4-raihanrafin-post"></div></div>
+          </div>
+        </div>
+        <div id="team4-raihanrafin-self" class="assessment-content">
+          <div class="charts-grid">
+            <div class="card"><h3>Pre-Program Baseline</h3><div id="chart-team4-raihanrafin-pre-self"></div></div>
+            <div class="card"><h3>Mid-Program Snapshot (Week 3)</h3><div id="chart-team4-raihanrafin-mid-self"></div></div>
+            <div class="card"><h3>Post-Program & Final Pitches</h3><div id="chart-team4-raihanrafin-post-self"></div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- TEAM 5: ENDEAVOR -->
+    <div id="team5" class="tab-content">
+      <h2>Team: Endeavor</h2>
+      <div class="subtabs">
+        <button class="subtab-button active" onclick="openSubTab(event, 'team5-overview')">Team Overview</button>
+        <button class="subtab-button" onclick="openSubTab(event, 'team5-angel-wai-hernandez')">Angel Wai Hernandez</button>
+        <button class="subtab-button" onclick="openSubTab(event, 'team5-caroline-creary')">Caroline Creary</button>
+        <button class="subtab-button" onclick="openSubTab(event, 'team5-kaylee-taye')">Kaylee Taye</button>
+        <button class="subtab-button" onclick="openSubTab(event, 'team5-rhyley-morrow')">Rhyley Morrow</button>
+      </div>
+
+      <div id="team5-overview" class="subtab-content active">
+        <h3>Team Aggregate View</h3>
+        <div class="charts-grid">
+          <div class="card"><h3>Pre-Program Baseline</h3><div id="chart-team5-begin"></div></div>
+          <div class="card"><h3>Mid-Program Snapshot (Week 3)</h3><div id="chart-team5-middle"></div></div>
+          <div class="card"><h3>Post-Program & Final Pitches</h3><div id="chart-team5-end"></div></div>
+        </div>
+      </div>
+
+      <div id="team5-angel-wai-hernandez" class="subtab-content">
+        <h3>Student: Angel Wai Hernandez</h3>
+        <div class="assessment-tabs">
+          <button class="assessment-button active" onclick="openAssessmentView(event, 'team5-angelwaihernandez-overall')">Overall Assessment</button>
+          <button class="assessment-button" onclick="openAssessmentView(event, 'team5-angelwaihernandez-self')">Student Self-Assessment</button>
+        </div>
+        <div id="team5-angelwaihernandez-overall" class="assessment-content active">
+          <div class="charts-grid">
+            <div class="card"><h3>Pre-Program Baseline</h3><div id="chart-team5-angelwaihernandez-pre"></div></div>
+            <div class="card"><h3>Mid-Program Snapshot (Week 3)</h3><div id="chart-team5-angelwaihernandez-mid"></div></div>
+            <div class="card"><h3>Post-Program & Final Pitches</h3><div id="chart-team5-angelwaihernandez-post"></div></div>
+          </div>
+        </div>
+        <div id="team5-angelwaihernandez-self" class="assessment-content">
+          <div class="charts-grid">
+            <div class="card"><h3>Pre-Program Baseline</h3><div id="chart-team5-angelwaihernandez-pre-self"></div></div>
+            <div class="card"><h3>Mid-Program Snapshot (Week 3)</h3><div id="chart-team5-angelwaihernandez-mid-self"></div></div>
+            <div class="card"><h3>Post-Program & Final Pitches</h3><div id="chart-team5-angelwaihernandez-post-self"></div></div>
+          </div>
+        </div>
+      </div>
+
+      <div id="team5-caroline-creary" class="subtab-content">
+        <h3>Student: Caroline Creary</h3>
+        <div class="assessment-tabs">
+          <button class="assessment-button active" onclick="openAssessmentView(event, 'team5-carolinecreary-overall')">Overall Assessment</button>
+          <button class="assessment-button" onclick="openAssessmentView(event, 'team5-carolinecreary-self')">Student Self-Assessment</button>
+        </div>
+        <div id="team5-carolinecreary-overall" class="assessment-content active">
+          <div class="charts-grid">
+            <div class="card"><h3>Pre-Program Baseline</h3><div id="chart-team5-carolinecreary-pre"></div></div>
+            <div class="card"><h3>Mid-Program Snapshot (Week 3)</h3><div id="chart-team5-carolinecreary-mid"></div></div>
+            <div class="card"><h3>Post-Program & Final Pitches</h3><div id="chart-team5-carolinecreary-post"></div></div>
+          </div>
+        </div>
+        <div id="team5-carolinecreary-self" class="assessment-content">
+          <div class="charts-grid">
+            <div class="card"><h3>Pre-Program Baseline</h3><div id="chart-team5-carolinecreary-pre-self"></div></div>
+            <div class="card"><h3>Mid-Program Snapshot (Week 3)</h3><div id="chart-team5-carolinecreary-mid-self"></div></div>
+            <div class="card"><h3>Post-Program & Final Pitches</h3><div id="chart-team5-carolinecreary-post-self"></div></div>
+          </div>
+        </div>
+      </div>
+
+      <div id="team5-kaylee-taye" class="subtab-content">
+        <h3>Student: Kaylee Taye</h3>
+        <div class="assessment-tabs">
+          <button class="assessment-button active" onclick="openAssessmentView(event, 'team5-kayleetaye-overall')">Overall Assessment</button>
+          <button class="assessment-button" onclick="openAssessmentView(event, 'team5-kayleetaye-self')">Student Self-Assessment</button>
+        </div>
+        <div id="team5-kayleetaye-overall" class="assessment-content active">
+          <div class="charts-grid">
+            <div class="card"><h3>Pre-Program Baseline</h3><div id="chart-team5-kayleetaye-pre"></div></div>
+            <div class="card"><h3>Mid-Program Snapshot (Week 3)</h3><div id="chart-team5-kayleetaye-mid"></div></div>
+            <div class="card"><h3>Post-Program & Final Pitches</h3><div id="chart-team5-kayleetaye-post"></div></div>
+          </div>
+        </div>
+        <div id="team5-kayleetaye-self" class="assessment-content">
+          <div class="charts-grid">
+            <div class="card"><h3>Pre-Program Baseline</h3><div id="chart-team5-kayleetaye-pre-self"></div></div>
+            <div class="card"><h3>Mid-Program Snapshot (Week 3)</h3><div id="chart-team5-kayleetaye-mid-self"></div></div>
+            <div class="card"><h3>Post-Program & Final Pitches</h3><div id="chart-team5-kayleetaye-post-self"></div></div>
+          </div>
+        </div>
+      </div>
+
+      <div id="team5-rhyley-morrow" class="subtab-content">
+        <h3>Student: Rhyley Morrow</h3>
+        <div class="assessment-tabs">
+          <button class="assessment-button active" onclick="openAssessmentView(event, 'team5-rhyleymorrow-overall')">Overall Assessment</button>
+          <button class="assessment-button" onclick="openAssessmentView(event, 'team5-rhyleymorrow-self')">Student Self-Assessment</button>
+        </div>
+        <div id="team5-rhyleymorrow-overall" class="assessment-content active">
+          <div class="charts-grid">
+            <div class="card"><h3>Pre-Program Baseline</h3><div id="chart-team5-rhyleymorrow-pre"></div></div>
+            <div class="card"><h3>Mid-Program Snapshot (Week 3)</h3><div id="chart-team5-rhyleymorrow-mid"></div></div>
+            <div class="card"><h3>Post-Program & Final Pitches</h3><div id="chart-team5-rhyleymorrow-post"></div></div>
+          </div>
+        </div>
+        <div id="team5-rhyleymorrow-self" class="assessment-content">
+          <div class="charts-grid">
+            <div class="card"><h3>Pre-Program Baseline</h3><div id="chart-team5-rhyleymorrow-pre-self"></div></div>
+            <div class="card"><h3>Mid-Program Snapshot (Week 3)</h3><div id="chart-team5-rhyleymorrow-mid-self"></div></div>
+            <div class="card"><h3>Post-Program & Final Pitches</h3><div id="chart-team5-rhyleymorrow-post-self"></div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- TEAM 6: SEMBLYNCE -->
+    <div id="team6" class="tab-content">
+      <h2>Team: Semblynce</h2>
+      <div class="subtabs">
+        <button class="subtab-button active" onclick="openSubTab(event, 'team6-overview')">Team Overview</button>
+        <button class="subtab-button" onclick="openSubTab(event, 'team6-brandon-suarez')">Brandon Suarez</button>
+        <button class="subtab-button" onclick="openSubTab(event, 'team6-janelle-boateng')">Janelle Boateng</button>
+        <button class="subtab-button" onclick="openSubTab(event, 'team6-michael-quintero')">Michael Quintero</button>
+        <button class="subtab-button" onclick="openSubTab(event, 'team6-rahib-hoque')">Rahib Hoque</button>
+      </div>
+
+      <div id="team6-overview" class="subtab-content active">
+        <h3>Team Aggregate View</h3>
+        <div class="charts-grid">
+          <div class="card"><h3>Pre-Program Baseline</h3><div id="chart-team6-begin"></div></div>
+          <div class="card"><h3>Mid-Program Snapshot (Week 3)</h3><div id="chart-team6-middle"></div></div>
+          <div class="card"><h3>Post-Program & Final Pitches</h3><div id="chart-team6-end"></div></div>
+        </div>
+      </div>
+
+      <div id="team6-brandon-suarez" class="subtab-content">
+        <h3>Student: Brandon Suarez</h3>
+        <div class="assessment-tabs">
+          <button class="assessment-button active" onclick="openAssessmentView(event, 'team6-brandonsuarez-overall')">Overall Assessment</button>
+          <button class="assessment-button" onclick="openAssessmentView(event, 'team6-brandonsuarez-self')">Student Self-Assessment</button>
+        </div>
+        <div id="team6-brandonsuarez-overall" class="assessment-content active">
+          <div class="charts-grid">
+            <div class="card"><h3>Pre-Program Baseline</h3><div id="chart-team6-brandonsuarez-pre"></div></div>
+            <div class="card"><h3>Mid-Program Snapshot (Week 3)</h3><div id="chart-team6-brandonsuarez-mid"></div></div>
+            <div class="card"><h3>Post-Program & Final Pitches</h3><div id="chart-team6-brandonsuarez-post"></div></div>
+          </div>
+        </div>
+        <div id="team6-brandonsuarez-self" class="assessment-content">
+          <div class="charts-grid">
+            <div class="card"><h3>Pre-Program Baseline</h3><div id="chart-team6-brandonsuarez-pre-self"></div></div>
+            <div class="card"><h3>Mid-Program Snapshot (Week 3)</h3><div id="chart-team6-brandonsuarez-mid-self"></div></div>
+            <div class="card"><h3>Post-Program & Final Pitches</h3><div id="chart-team6-brandonsuarez-post-self"></div></div>
+          </div>
+        </div>
+      </div>
+
+      <div id="team6-janelle-boateng" class="subtab-content">
+        <h3>Student: Janelle Boateng</h3>
+        <div class="assessment-tabs">
+          <button class="assessment-button active" onclick="openAssessmentView(event, 'team6-janelleboateng-overall')">Overall Assessment</button>
+          <button class="assessment-button" onclick="openAssessmentView(event, 'team6-janelleboateng-self')">Student Self-Assessment</button>
+        </div>
+        <div id="team6-janelleboateng-overall" class="assessment-content active">
+          <div class="charts-grid">
+            <div class="card"><h3>Pre-Program Baseline</h3><div id="chart-team6-janelleboateng-pre"></div></div>
+            <div class="card"><h3>Mid-Program Snapshot (Week 3)</h3><div id="chart-team6-janelleboateng-mid"></div></div>
+            <div class="card"><h3>Post-Program & Final Pitches</h3><div id="chart-team6-janelleboateng-post"></div></div>
+          </div>
+        </div>
+        <div id="team6-janelleboateng-self" class="assessment-content">
+          <div class="charts-grid">
+            <div class="card"><h3>Pre-Program Baseline</h3><div id="chart-team6-janelleboateng-pre-self"></div></div>
+            <div class="card"><h3>Mid-Program Snapshot (Week 3)</h3><div id="chart-team6-janelleboateng-mid-self"></div></div>
+            <div class="card"><h3>Post-Program & Final Pitches</h3><div id="chart-team6-janelleboateng-post-self"></div></div>
+          </div>
+        </div>
+      </div>
+
+      <div id="team6-michael-quintero" class="subtab-content">
+        <h3>Student: Michael Quintero</h3>
+        <div class="assessment-tabs">
+          <button class="assessment-button active" onclick="openAssessmentView(event, 'team6-michaelquintero-overall')">Overall Assessment</button>
+          <button class="assessment-button" onclick="openAssessmentView(event, 'team6-michaelquintero-self')">Student Self-Assessment</button>
+        </div>
+        <div id="team6-michaelquintero-overall" class="assessment-content active">
+          <div class="charts-grid">
+            <div class="card"><h3>Pre-Program Baseline</h3><div id="chart-team6-michaelquintero-pre"></div></div>
+            <div class="card"><h3>Mid-Program Snapshot (Week 3)</h3><div id="chart-team6-michaelquintero-mid"></div></div>
+            <div class="card"><h3>Post-Program & Final Pitches</h3><div id="chart-team6-michaelquintero-post"></div></div>
+          </div>
+        </div>
+        <div id="team6-michaelquintero-self" class="assessment-content">
+          <div class="charts-grid">
+            <div class="card"><h3>Pre-Program Baseline</h3><div id="chart-team6-michaelquintero-pre-self"></div></div>
+            <div class="card"><h3>Mid-Program Snapshot (Week 3)</h3><div id="chart-team6-michaelquintero-mid-self"></div></div>
+            <div class="card"><h3>Post-Program & Final Pitches</h3><div id="chart-team6-michaelquintero-post-self"></div></div>
+          </div>
+        </div>
+      </div>
+
+      <div id="team6-rahib-hoque" class="subtab-content">
+        <h3>Student: Rahib Hoque</h3>
+        <div class="assessment-tabs">
+          <button class="assessment-button active" onclick="openAssessmentView(event, 'team6-rahibhoque-overall')">Overall Assessment</button>
+          <button class="assessment-button" onclick="openAssessmentView(event, 'team6-rahibhoque-self')">Student Self-Assessment</button>
+        </div>
+        <div id="team6-rahibhoque-overall" class="assessment-content active">
+          <div class="charts-grid">
+            <div class="card"><h3>Pre-Program Baseline</h3><div id="chart-team6-rahibhoque-pre"></div></div>
+            <div class="card"><h3>Mid-Program Snapshot (Week 3)</h3><div id="chart-team6-rahibhoque-mid"></div></div>
+            <div class="card"><h3>Post-Program & Final Pitches</h3><div id="chart-team6-rahibhoque-post"></div></div>
+          </div>
+        </div>
+        <div id="team6-rahibhoque-self" class="assessment-content">
+          <div class="charts-grid">
+            <div class="card"><h3>Pre-Program Baseline</h3><div id="chart-team6-rahibhoque-pre-self"></div></div>
+            <div class="card"><h3>Mid-Program Snapshot (Week 3)</h3><div id="chart-team6-rahibhoque-mid-self"></div></div>
+            <div class="card"><h3>Post-Program & Final Pitches</h3><div id="chart-team6-rahibhoque-post-self"></div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <script>
+    // --- SKILL GROUPING + BASE SKILLS ---
+
+    // ---- SKILL GROUPING ----
+
+    const SKILL_GROUPS = {
+      'Adaptability & Creativity': ['Adaptability', 'Learning', 'Creativity'],
+      'Problem-Solving': ['Problem-Solving', 'Critical Thinking'],
+      'EQ & Ethics': ['Emotional Intelligence', 'Ethics'],
+      'Collaboration & Communication': ['Communication', 'Collaboration'],
+      'Tech Aptitude': ['Tech Aptitude'],
+      'Time Management': ['Time Management']
+    };
+    const BASE_SKILLS = [...new Set(Object.values(SKILL_GROUPS).flat())].map(s => s.replace('<br>', ''));
+
+    // ---- UI HELPERS (kept the same, with "Overview by default") ----
+    function openTab(evt, tabName) {
+      const tabcontent = document.querySelectorAll(".tab-content");
+      tabcontent.forEach(tc => tc.classList.remove('active'));
+      const tablinks = document.querySelectorAll(".tab-button");
+      tablinks.forEach(tl => tl.classList.remove('active'));
+      const tabEl = document.getElementById(tabName);
+      if (tabEl) tabEl.classList.add('active');
+      evt.currentTarget.classList.add("active");
+      const defaultSubBtn = tabEl.querySelector(".subtab-button");
+      if (defaultSubBtn) defaultSubBtn.click();
+    }
+
+    function openSubTab(evt, tabName) {
+      const mainTabContent = evt.currentTarget.closest('.tab-content');
+      if (!mainTabContent) return;
+      const subtabContents = mainTabContent.querySelectorAll('.subtab-content');
+      subtabContents.forEach(content => content.classList.remove('active'));
+      const subtabButtons = mainTabContent.querySelectorAll('.subtab-button');
+      subtabButtons.forEach(button => button.classList.remove('active'));
+      const targetSubtab = document.getElementById(tabName);
+      if (targetSubtab) {
+          targetSubtab.classList.add('active');
+          // HACK: Force Plotly to resize charts in the now-visible container
+          // This is needed because Plotly can't calculate dimensions of hidden elements.
+          setTimeout(() => {
+            targetSubtab.querySelectorAll('div[id^="chart-"]').forEach(Plotly.Plots.resize);
+          }, 10);
+      }
+      evt.currentTarget.classList.add('active');
+      const defaultAssessmentButton = targetSubtab.querySelector('.assessment-button');
+      if (defaultAssessmentButton) {
+          defaultAssessmentButton.click();
+      }
+    }
+
+    function openAssessmentView(evt, viewName) {
+      const studentContainer = evt.currentTarget.closest('.subtab-content');
+      if (!studentContainer) return;
+      const assessmentContents = studentContainer.querySelectorAll('.assessment-content');
+      assessmentContents.forEach(content => content.classList.remove('active'));
+      const assessmentButtons = studentContainer.querySelectorAll('.assessment-button');
+      assessmentButtons.forEach(button => button.classList.remove('active'));
+      const targetContent = document.getElementById(viewName);
+      if (targetContent) {
+          targetContent.classList.add('active');
+          // HACK: Force Plotly to resize charts in the now-visible container
+          // This is needed because Plotly can't calculate dimensions of hidden elements.
+          setTimeout(() => {
+            targetContent.querySelectorAll('div[id^="chart-"]').forEach(Plotly.Plots.resize);
+          }, 10);
+      }
+      evt.currentTarget.classList.add('active');
+    }
+
+    // ---- CHART HELPERS (unchanged) ----
+    function getAggregatedScores(rawScores) {
+      const aggregated = {};
+      for (const groupName in SKILL_GROUPS) {
+        const skillsInGroup = SKILL_GROUPS[groupName].map(s => s.replace('<br>', ''));
+        const total = skillsInGroup.reduce((sum, skill) => sum + (rawScores[skill] || 0), 0);
+        aggregated[groupName] = total / skillsInGroup.length;
+      }
+      return aggregated;
+    }
+    function createTeamRadarChart(targetElementId, teamData, timePeriod, previousTimePeriod) {
+      if (!teamData || !teamData.students) return;
+      const categories = Object.keys(SKILL_GROUPS);
+      const names = Object.keys(teamData.students);
+      if (!names.length) return;
+
+      const teamRaw = {};
+      BASE_SKILLS.forEach(skill => {
+        teamRaw[skill] = names.reduce((acc, n) => acc + ((teamData.students[n][timePeriod] || {})[skill] || 0), 0) / names.length;
+      });
+      const vals = categories.map(cat => getAggregatedScores(teamRaw)[cat]);
+
+      let previousVals;
+      if (previousTimePeriod) {
+          const prevTeamRaw = {};
+          BASE_SKILLS.forEach(skill => {
+              prevTeamRaw[skill] = names.reduce((acc, n) => acc + ((teamData.students[n][previousTimePeriod] || {})[skill] || 0), 0) / names.length;
+          });
+          previousVals = categories.map(cat => getAggregatedScores(prevTeamRaw)[cat]);
+      }
+
+      const legendText = categories.map((cat, i) => {
+        let shortCat = cat;
+        if (cat.includes('Adaptability')) shortCat = 'Adaptability...';
+        else if (cat.includes('Collaboration')) shortCat = 'Collab & Comm';
+
+        let diffText = '';
+        if (previousVals) {
+            const diff = vals[i] - previousVals[i];
+            const sign = diff >= 0 ? '+' : '';
+            diffText = ` <span style="color:${diff >= 0 ? 'green' : 'red'};">(${sign}${diff.toFixed(2)})</span>`;
+        }
+        return `<b>${shortCat}</b>: ${vals[i].toFixed(2)}${diffText}`;
+      }).join('<br>');
+
+      Plotly.newPlot(targetElementId, [{
+        type: 'scatterpolar', r: vals, theta: categories, fill: 'toself',
+        line: { color: '#532952' }, name: 'Team Average',
+        hovertemplate: '<b>%{theta}</b><br>Average: %{r:.2f}<extra></extra>'
+      }], {
+        polar: { domain: { y: [0.15, 1] }, radialaxis: { visible: true, range: [0,5], angle: 0 }, angularaxis: { automargin: true } },
+        showlegend: false, margin: { t: 50, b: 50, l: 50, r: 50 },
+        annotations: [{
+          x: 1, y: 0, xref: 'paper', yref: 'paper', text: legendText,
+          showarrow: false, align: 'right', xanchor: 'right', yanchor: 'bottom',
+          bgcolor: 'rgba(255, 255, 255, 0.85)', borderpad: 4, font: { size: 12 }
+        }]
+      }, {responsive: true});
+    }
+    function createStudentRadarChart(targetId, studentData, timePeriod, previousTimePeriod, title) {
+      if (!studentData) return;
+      const categories = Object.keys(SKILL_GROUPS);
+      const agg = getAggregatedScores(studentData[timePeriod] || {});
+      const vals = categories.map(cat => agg[cat] || 0);
+
+      let previousVals;
+      if (previousTimePeriod) {
+          const prevAgg = getAggregatedScores(studentData[previousTimePeriod] || {});
+          previousVals = categories.map(cat => prevAgg[cat] || 0);
+      }
+
+      const legendText = categories.map((cat, i) => {
+        let shortCat = cat;
+        if (cat.includes('Adaptability')) shortCat = 'Adaptability...';
+        else if (cat.includes('Collaboration')) shortCat = 'Collab & Comm';
+        
+        let diffText = '';
+        if (previousVals) {
+            const diff = vals[i] - previousVals[i];
+            const sign = diff >= 0 ? '+' : '';
+            diffText = ` <span style="color:${diff >= 0 ? 'green' : 'red'};">(${sign}${diff.toFixed(2)})</span>`;
+        }
+        return `<b>${shortCat}</b>: ${vals[i].toFixed(2)}${diffText}`;
+      }).join('<br>');
+
+      Plotly.newPlot(targetId, [{
+        type: 'scatterpolar', r: vals, theta: categories, fill: 'toself',
+        line: { color: '#532952' }, name: 'Score',
+        hovertemplate: '<b>%{theta}</b><br>Score: %{r:.2f}<extra></extra>'
+      }], {
+        title: { text: title, font: { size: 16 } },
+        polar: { domain: { y: [0.15, 1] }, radialaxis: { visible: true, range: [0,5], angle: 0 }, angularaxis: { automargin: true } },
+        showlegend: false, margin: { t: 50, b: 50, l: 50, r: 50 },
+        annotations: [{
+          x: 1, y: 0, xref: 'paper', yref: 'paper', text: legendText,
+          showarrow: false, align: 'right', xanchor: 'right', yanchor: 'bottom',
+          bgcolor: 'rgba(255, 255, 255, 0.85)', borderpad: 4, font: { size: 12 }
+        }]
+      }, {responsive: true});
+    }
+
+    // ---- Your category-level scores (exactly as provided) ----
+    // NOTE: For tab labels, I matched the names used in your HTML:
+    // - "Jose Manuel Plata" -> "Jose Plata"
+    // - "Angel Wai-Hernandez" -> "Angel Wai Hernandez"
+    // - "Jordan Edwards" -> "Jordan Edwards Williams"
+    const CAT = (ACC, PSCRA, TA, EIEDM, CTCCE, TM) =>
+      ({ 'Adaptability & Creativity': ACC,
+        'Problem-Solving': PSCRA,
+        'Tech Aptitude': TA,
+        'EQ & Ethics': EIEDM,
+        'Collaboration & Communication': CTCCE,
+        'Time Management': TM });
+
+    const CATEGORY_DATA = {
+      "Group: Thryfted": {
+        "Keziah Letsa": {
+          pre:  CAT(2.5, 2.5, 2.0, 3.0, 3.0, 3.0),
+          mid:  CAT(3.5, 3.0, 2.5, 3.5, 3.5, 3.5),
+          post: CAT(4.0, 3.5, 3.0, 4.0, 4.5, 4.0),
+          pre_self: CAT(2.8, 2.9, 2.2, 3.3, 3.1, 3.4),
+          mid_self: CAT(3.3, 3.2, 2.8, 3.6, 3.6, 3.7),
+          post_self: CAT(4.2, 3.8, 3.3, 4.1, 4.6, 4.2)
+        },
+        "Tochi Ugboajah": {
+          pre:  CAT(2.5, 2.5, 2.0, 2.5, 2.5, 3.0),
+          mid:  CAT(3.5, 3.0, 3.0, 3.0, 3.5, 3.5),
+          post: CAT(4.0, 3.5, 4.0, 3.5, 4.0, 4.0),
+          pre_self: CAT(2.7, 2.8, 2.4, 2.7, 2.8, 3.1),
+          mid_self: CAT(3.6, 3.3, 3.2, 3.3, 3.7, 3.6),
+          post_self: CAT(3.9, 3.7, 4.1, 3.8, 4.2, 4.1)
+        },
+        "Yasmin Folarin": {
+          pre:  CAT(3.0, 2.5, 2.0, 2.5, 3.0, 2.5),
+          mid:  CAT(3.5, 3.0, 2.5, 3.0, 3.5, 3.0),
+          post: CAT(4.0, 3.5, 3.0, 3.5, 4.0, 3.5),
+          pre_self: CAT(3.3, 2.8, 2.1, 2.8, 3.2, 2.9),
+          mid_self: CAT(3.6, 3.1, 2.7, 3.2, 3.7, 3.3),
+          post_self: CAT(4.1, 3.8, 3.2, 3.7, 4.2, 3.8)
+        },
+        "Jaheem Beck": {
+          pre:  CAT(2.5, 2.0, 2.0, 2.5, 2.5, 2.5),
+          mid:  CAT(3.0, 2.5, 2.5, 3.0, 3.0, 3.0),
+          post: CAT(3.5, 3.0, 3.5, 3.5, 3.5, 3.5),
+          pre_self: CAT(2.8, 2.4, 2.3, 2.7, 2.7, 2.8),
+          mid_self: CAT(3.2, 2.7, 2.8, 3.1, 3.3, 3.1),
+          post_self: CAT(3.7, 3.3, 3.6, 3.7, 3.8, 3.6)
+        }
+      },
+      "Group: Money Migo": {
+        "Nusayba Nizam": {
+          pre:  CAT(3.0, 3.0, 2.5, 3.0, 3.5, 3.0),
+          mid:  CAT(3.5, 3.5, 3.0, 3.5, 4.0, 3.5),
+          post: CAT(4.0, 4.5, 3.5, 4.0, 4.8, 4.0),
+          pre_self: CAT(3.2, 3.3, 2.8, 3.1, 3.7, 3.2),
+          mid_self: CAT(3.7, 3.7, 3.2, 3.7, 4.1, 3.8),
+          post_self: CAT(4.2, 4.6, 3.7, 4.2, 4.9, 4.3)
+        },
+        "Isabella Calderon": {
+          pre:  CAT(2.5, 2.5, 2.0, 2.5, 3.0, 2.5),
+          mid:  CAT(3.5, 3.5, 2.5, 3.0, 4.0, 3.5),
+          post: CAT(4.0, 4.5, 3.0, 3.5, 4.8, 4.0),
+          pre_self: CAT(2.8, 2.7, 2.2, 2.8, 3.3, 2.9),
+          mid_self: CAT(3.6, 3.8, 2.7, 3.3, 4.2, 3.8),
+          post_self: CAT(4.2, 4.7, 3.3, 3.8, 4.9, 4.2)
+        },
+        "Ben Brown": {
+          pre:  CAT(3.0, 3.0, 2.5, 2.5, 2.5, 3.0),
+          mid:  CAT(3.5, 3.5, 3.5, 3.0, 3.5, 3.5),
+          post: CAT(4.0, 4.0, 4.5, 3.5, 4.5, 4.0),
+          pre_self: CAT(3.1, 3.2, 2.9, 2.8, 2.9, 3.2),
+          mid_self: CAT(3.7, 3.8, 3.7, 3.4, 3.8, 3.7),
+          post_self: CAT(4.1, 4.3, 4.6, 3.9, 4.7, 4.2)
+        },
+        "Maryama Karimou": {
+          pre:  CAT(2.5, 2.5, 2.0, 3.0, 3.0, 2.5),
+          mid:  CAT(3.5, 3.5, 2.5, 3.5, 3.5, 3.0),
+          post: CAT(4.0, 4.5, 3.0, 4.0, 4.5, 3.5),
+          pre_self: CAT(2.8, 2.8, 2.3, 3.2, 3.2, 2.9),
+          mid_self: CAT(3.7, 3.7, 2.9, 3.8, 3.8, 3.4),
+          post_self: CAT(4.1, 4.6, 3.4, 4.2, 4.7, 3.9)
+        }
+      },
+      "Group: Mobilize Us": {
+        "Ben Dike": {
+          pre:  CAT(2.6, 2.8, 2.4, 2.8, 2.7, 2.5),
+          mid:  CAT(3.1, 3.2, 2.9, 3.1, 3.2, 2.9),
+          post: CAT(3.5, 3.4, 3.2, 3.4, 3.4, 3.1),
+          pre_self: CAT(2.9, 3.0, 2.7, 3.0, 3.0, 2.8),
+          mid_self: CAT(3.4, 3.5, 3.1, 3.3, 3.5, 3.1),
+          post_self: CAT(3.7, 3.7, 3.5, 3.6, 3.7, 3.4)
+        },
+        "Zaire Spencer": {
+          pre:  CAT(3.0, 3.0, 2.5, 3.0, 3.2, 3.0),
+          mid:  CAT(3.6, 3.6, 3.0, 3.4, 3.8, 3.4),
+          post: CAT(4.0, 4.0, 3.2, 3.8, 4.0, 3.6),
+          pre_self: CAT(3.2, 3.1, 2.8, 3.2, 3.5, 3.3),
+          mid_self: CAT(3.8, 3.7, 3.3, 3.6, 4.0, 3.7),
+          post_self: CAT(4.2, 4.2, 3.5, 4.0, 4.3, 3.9)
+        },
+        "Logan Passe": {
+          pre:  CAT(2.5, 2.6, 2.0, 2.8, 3.0, 2.8),
+          mid:  CAT(3.1, 3.1, 2.5, 3.1, 3.4, 3.1),
+          post: CAT(3.6, 3.5, 2.8, 3.4, 3.6, 3.4),
+          pre_self: CAT(2.8, 2.9, 2.3, 3.0, 3.2, 3.0),
+          mid_self: CAT(3.3, 3.4, 2.8, 3.4, 3.7, 3.4),
+          post_self: CAT(3.8, 3.8, 3.1, 3.7, 3.9, 3.6)
+        },
+        "Jose Plata": {
+          pre:  CAT(2.8, 2.9, 2.5, 2.9, 3.0, 2.8),
+          mid:  CAT(3.2, 3.2, 3.0, 3.1, 3.3, 3.0),
+          post: CAT(3.5, 3.6, 3.2, 3.4, 3.5, 3.2),
+          pre_self: CAT(3.0, 3.1, 2.8, 3.1, 3.2, 3.1),
+          mid_self: CAT(3.5, 3.4, 3.2, 3.4, 3.5, 3.3),
+          post_self: CAT(3.8, 3.8, 3.5, 3.6, 3.8, 3.5)
+        }
+      },
+      "Group: Willing Soil": {
+        "Raihan Rafin": {
+          pre:  CAT(3.0, 3.0, 2.5, 3.0, 3.5, 3.0),
+          mid:  CAT(3.6, 3.5, 2.8, 3.4, 4.0, 3.4),
+          post: CAT(4.2, 4.6, 3.4, 4.0, 4.7, 4.0),
+          pre_self: CAT(3.3, 3.2, 2.7, 3.3, 3.7, 3.2),
+          mid_self: CAT(3.8, 3.8, 3.1, 3.7, 4.2, 3.7),
+          post_self: CAT(4.4, 4.7, 3.7, 4.2, 4.8, 4.3)
+        },
+        "Jordan Edwards Williams": {
+          pre:  CAT(2.7, 2.8, 2.3, 2.8, 3.0, 2.8),
+          mid:  CAT(3.2, 3.2, 2.7, 3.1, 3.6, 3.2),
+          post: CAT(4.0, 4.4, 3.0, 3.8, 4.6, 3.8),
+          pre_self: CAT(3.0, 3.1, 2.6, 3.0, 3.3, 3.0),
+          mid_self: CAT(3.5, 3.5, 3.0, 3.4, 3.8, 3.5),
+          post_self: CAT(4.2, 4.5, 3.4, 4.0, 4.7, 4.0)
+        },
+        "Michael Bawuah": {
+          pre:  CAT(2.8, 2.9, 2.4, 2.9, 3.0, 2.8),
+          mid:  CAT(3.3, 3.3, 2.9, 3.2, 3.4, 3.1),
+          post: CAT(4.1, 4.5, 3.2, 3.9, 4.5, 3.7),
+          pre_self: CAT(3.1, 3.0, 2.7, 3.1, 3.2, 3.1),
+          mid_self: CAT(3.6, 3.5, 3.1, 3.5, 3.7, 3.4),
+          post_self: CAT(4.3, 4.6, 3.5, 4.1, 4.7, 4.0)
+        },
+        "Ishmael Sillah": {
+          pre:  CAT(2.6, 2.7, 2.2, 2.8, 2.9, 2.6),
+          mid:  CAT(3.0, 3.1, 2.5, 3.1, 3.2, 2.9),
+          post: CAT(3.6, 3.8, 2.8, 3.4, 4.2, 3.3),
+          pre_self: CAT(2.9, 2.9, 2.5, 3.0, 3.1, 2.9),
+          mid_self: CAT(3.3, 3.4, 2.8, 3.3, 3.5, 3.2),
+          post_self: CAT(3.8, 4.0, 3.1, 3.7, 4.4, 3.6)
+        }
+      },
+      "Group: Endeavor": {
+        "Rhyley Morrow": {
+          pre:  CAT(2.8, 3.0, 2.6, 2.9, 3.0, 2.9),
+          mid:  CAT(3.3, 3.4, 3.0, 3.2, 3.6, 3.3),
+          post: CAT(3.9, 4.2, 3.4, 3.7, 4.3, 3.8),
+          pre_self: CAT(3.0, 3.2, 2.8, 3.1, 3.3, 3.1),
+          mid_self: CAT(3.5, 3.6, 3.2, 3.5, 3.8, 3.5),
+          post_self: CAT(4.1, 4.4, 3.6, 3.9, 4.5, 4.0)
+        },
+        "Angel Wai Hernandez": {
+          pre:  CAT(2.9, 2.8, 2.5, 3.0, 3.0, 2.8),
+          mid:  CAT(3.4, 3.3, 2.9, 3.3, 3.8, 3.3),
+          post: CAT(4.0, 4.1, 3.3, 3.8, 4.4, 3.7),
+          pre_self: CAT(3.1, 3.0, 2.8, 3.2, 3.2, 3.0),
+          mid_self: CAT(3.6, 3.5, 3.1, 3.5, 4.0, 3.5),
+          post_self: CAT(4.2, 4.3, 3.6, 4.0, 4.6, 3.9)
+        },
+        "Caroline Creary": {
+          pre:  CAT(2.6, 2.7, 2.4, 2.7, 2.8, 2.6),
+          mid:  CAT(3.2, 3.2, 2.9, 3.1, 3.5, 3.0),
+          post: CAT(3.8, 3.9, 3.2, 3.6, 4.2, 3.5),
+          pre_self: CAT(2.9, 2.9, 2.7, 2.9, 3.1, 2.9),
+          mid_self: CAT(3.4, 3.5, 3.1, 3.4, 3.7, 3.3),
+          post_self: CAT(4.0, 4.1, 3.5, 3.8, 4.4, 3.8)
+        },
+        "Kaylee Taye": {
+          pre:  CAT(2.7, 2.8, 2.3, 2.9, 3.1, 2.8),
+          mid:  CAT(3.3, 3.4, 2.8, 3.3, 3.7, 3.2),
+          post: CAT(4.0, 4.2, 3.1, 3.9, 4.5, 3.8),
+          pre_self: CAT(3.0, 3.0, 2.6, 3.1, 3.3, 3.0),
+          mid_self: CAT(3.5, 3.7, 3.0, 3.6, 3.9, 3.5),
+          post_self: CAT(4.2, 4.4, 3.4, 4.1, 4.7, 4.0)
+        }
+      },
+      "Group: Semblynce": {
+        "Rahib Hoque": {
+          pre:  CAT(2.5, 2.6, 2.3, 2.6, 2.7, 2.5),
+          mid:  CAT(3.1, 3.2, 2.9, 3.0, 3.3, 3.0),
+          post: CAT(3.8, 3.9, 3.4, 3.5, 4.0, 3.6),
+          pre_self: CAT(2.8, 2.8, 2.5, 2.8, 3.0, 2.8),
+          mid_self: CAT(3.3, 3.4, 3.1, 3.3, 3.5, 3.3),
+          post_self: CAT(4.0, 4.1, 3.6, 3.8, 4.2, 3.8)
+        },
+        "Brandon Suarez": {
+          pre:  CAT(2.6, 2.7, 2.5, 2.8, 2.9, 2.7),
+          mid:  CAT(3.0, 3.1, 2.9, 3.1, 3.3, 2.9),
+          post: CAT(3.6, 3.8, 3.2, 3.4, 3.8, 3.4),
+          pre_self: CAT(2.9, 2.9, 2.7, 3.0, 3.1, 3.0),
+          mid_self: CAT(3.3, 3.3, 3.1, 3.3, 3.5, 3.2),
+          post_self: CAT(3.8, 4.0, 3.5, 3.6, 4.0, 3.7)
+        },
+        "Michael Quintero": {
+          pre:  CAT(2.7, 2.8, 2.4, 2.8, 2.9, 2.7),
+          mid:  CAT(3.2, 3.3, 2.9, 3.2, 3.5, 3.1),
+          post: CAT(3.7, 3.9, 3.3, 3.5, 4.0, 3.6),
+          pre_self: CAT(3.0, 3.0, 2.7, 3.0, 3.1, 3.0),
+          mid_self: CAT(3.4, 3.5, 3.1, 3.4, 3.7, 3.4),
+          post_self: CAT(3.9, 4.1, 3.6, 3.8, 4.2, 3.9)
+        },
+        "Janelle Boateng": {
+          pre:  CAT(2.9, 3.0, 2.5, 3.0, 3.1, 2.9),
+          mid:  CAT(3.5, 3.6, 3.0, 3.4, 3.8, 3.3),
+          post: CAT(4.1, 4.2, 3.5, 3.9, 4.4, 3.8),
+          pre_self: CAT(3.1, 3.2, 2.8, 3.2, 3.3, 3.1),
+          mid_self: CAT(3.7, 3.8, 3.2, 3.6, 4.0, 3.6),
+          post_self: CAT(4.3, 4.4, 3.7, 4.1, 4.6, 4.0)
+        }
+      }
+    };
+
+    // ---- Expand category scores into base skills the charts expect ----
+    function expandToBaseSkills(catScores) {
+      const base = {};
+      for (const groupName in SKILL_GROUPS) {
+        const val = catScores[groupName];
+        for (const skill of SKILL_GROUPS[groupName]) base[skill.replace('<br>','')] = val;
+      }
+      return base;
+    }
+
+    // Build TEAM_DATA from CATEGORY_DATA
+    const TEAM_DATA = {};
+    for (const group in CATEGORY_DATA) {
+      TEAM_DATA[group] = { students: {} };
+      for (const student in CATEGORY_DATA[group]) {
+        const s = CATEGORY_DATA[group][student];
+        TEAM_DATA[group].students[student] = {
+          preProgram:  expandToBaseSkills(s.pre),
+          midProgram:  expandToBaseSkills(s.mid),
+          postProgram: expandToBaseSkills(s.post),
+          preProgram_self:  expandToBaseSkills(s.pre_self),
+          midProgram_self:  expandToBaseSkills(s.mid_self),
+          postProgram_self: expandToBaseSkills(s.post_self),
+        };
+      }
+    }
+
+    // ---- Render everything (all teams + all students) ----
+    document.addEventListener('DOMContentLoaded', () => {
+      const teams = {
+        team1: { key: "Group: Thryfted", students: ["Yasmin Folarin","Keziah Letsa","Jaheem Beck","Tochi Ugboajah"] },
+        team2: { key: "Group: Money Migo", students: ["Ben Brown","Isabella Calderon","Maryama Karimou","Nusayba Nizam"] },
+        team3: { key: "Group: Mobilize Us", students: ["Ben Dike","Jose Plata","Logan Passe","Zaire Spencer"] },
+        team4: { key: "Group: Willing Soil", students: ["Ishmael Sillah","Jordan Edwards Williams","Michael Bawuah","Raihan Rafin"] },
+        team5: { key: "Group: Endeavor", students: ["Angel Wai Hernandez","Caroline Creary","Kaylee Taye","Rhyley Morrow"] },
+        team6: { key: "Group: Semblynce", students: ["Brandon Suarez","Janelle Boateng","Michael Quintero","Rahib Hoque"] },
+      };
+
+      // Team overview charts
+      for (const id of Object.keys(teams)) {
+        const key = teams[id].key;
+        createTeamRadarChart(`chart-${id}-begin`, TEAM_DATA[key], 'preProgram', null);
+        createTeamRadarChart(`chart-${id}-middle`, TEAM_DATA[key], 'midProgram', 'preProgram');
+        createTeamRadarChart(`chart-${id}-end`, TEAM_DATA[key], 'postProgram', 'midProgram');
+      }
+
+      // Student charts
+      function slug(s){ return s.toLowerCase().replace(/[^a-z0-9]+/g,''); }
+      for (const id of Object.keys(teams)) {
+        const key = teams[id].key;
+        for (const name of teams[id].students) {
+          const data = TEAM_DATA[key].students[name];
+          if (!data) continue; // in case of name mismatch
+          const s = slug(name);
+          createStudentRadarChart(`chart-${id}-${s}-pre`,  data, 'preProgram', null, ' ');
+          createStudentRadarChart(`chart-${id}-${s}-mid`,  data, 'midProgram', 'preProgram', ' ');
+          createStudentRadarChart(`chart-${id}-${s}-post`, data, 'postProgram', 'midProgram', ' ');
+          createStudentRadarChart(`chart-${id}-${s}-pre-self`,  data, 'preProgram_self', null, ' ');
+          createStudentRadarChart(`chart-${id}-${s}-mid-self`,  data, 'midProgram_self', 'preProgram_self', ' ');
+          createStudentRadarChart(`chart-${id}-${s}-post-self`, data, 'postProgram_self', 'midProgram_self', ' ');
+        }
+      }
+    });
+  </script>
+</body>
+</html>
